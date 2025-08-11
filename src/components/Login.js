@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
 import './Login.css';
+import backgroundImage from './bg.jpg'; // Import the image
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -26,7 +27,10 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
+    <div
+      className="login-container"
+      style={{ backgroundImage: `url(${backgroundImage})` }} // Use inline style
+    >
       <div className="login-box">
         <h2>Admin Login</h2>
         <form onSubmit={handleLogin}>
