@@ -1,4 +1,177 @@
+/* src/components/Home.css */
 
+/* 1. CSS Variables */
+:root {
+  --header-height: 64px;
+  --header-bg: #ffffff;
+  --header-border: #e2e8f0;
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --button-hover-bg: #f7fafc;
+  --transition: 0.2s ease;
+}
+
+/* 2. Home Container */
 .home-container {
-    padding: 20px;
+  min-height: 100vh;
+  background-color: #f7f9fc;
+}
+
+/* 3. App Header */
+.app-header {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  height: var(--header-height);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 4. App Title (Logo) - Left Side */
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.app-title .fas {
+  color: var(--text-light);
+  font-size: 1.25rem;
+}
+
+/* 5. Header Actions - Right Side */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 6. Buttons */
+.logout-btn,
+.back-to-classes-btn {
+  background-color: transparent;
+  border: 1px solid var(--header-border);
+  border-radius: 0.5rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all var(--transition);
+  font-family: inherit;
+}
+
+.logout-btn:hover,
+.back-to-classes-btn:hover {
+  background-color: var(--button-hover-bg);
+  border-color: var(--text-light);
+}
+
+.logout-btn .fas,
+.back-to-classes-btn .fas {
+  font-size: 0.875rem;
+}
+
+/* 7. Main Content */
+.main-content {
+  min-height: calc(100vh - var(--header-height));
+  padding: 0;
+}
+
+/* 8. Loading Container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f7f9fc;
+  color: var(--text-light);
+}
+
+.loading-spinner {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.loading-container p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* 9. Error Banner */
+.error-banner {
+  background-color: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 0.5rem;
+  color: #c53030;
+  padding: 1rem 1.5rem;
+  margin: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.error-banner .fas {
+  font-size: 1.25rem;
+}
+
+/* 10. Responsive Design */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 1rem;
+  }
+  
+  .app-title {
+    font-size: 1.25rem;
+  }
+  
+  .app-title .fas {
+    font-size: 1rem;
+  }
+  
+  .logout-btn,
+  .back-to-classes-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .header-actions {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 1.125rem;
+  }
+  
+  .logout-btn span,
+  .back-to-classes-btn span {
+    display: none;
+  }
+  
+  .logout-btn,
+  .back-to-classes-btn {
+    padding: 0.5rem;
+  }
 }

@@ -1,0 +1,312 @@
+/* src/components/StudentList.css */
+
+/* 1. CSS Variables */
+:root {
+  --bg-primary: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --border-color: #dee2e6;
+  --hover-bg: #f8f9fa;
+  --accent: #495057;
+  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+  --transition: 0.15s ease-in-out;
+}
+
+/* 2. Main Container */
+.student-list {
+  background-color: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: calc(100vh - 64px);
+  padding: 2.5rem 2rem;
+}
+
+/* 3. Section Title */
+.section-title {
+  color: var(--text-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* 4. Back Button - Removed as it's not in the component */
+
+/* 4. Student List Header */
+.student-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+}
+
+.student-count {
+  background: var(--card-bg);
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.student-count i {
+  color: var(--text-secondary);
+}
+
+.student-count span {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* 5. Table Container */
+.students-table-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* 6. Students Table */
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.students-table thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.students-table th {
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.students-table th:first-child {
+  padding-left: 1.5rem;
+}
+
+.students-table th:last-child {
+  text-align: center;
+  padding-right: 1.5rem;
+}
+
+.students-table td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.students-table td:first-child {
+  padding-left: 1.5rem;
+}
+
+.students-table td:last-child {
+  text-align: center;
+  padding-right: 1.5rem;
+}
+
+.students-table tbody tr {
+  transition: background-color var(--transition);
+}
+
+.students-table tbody tr:hover {
+  background-color: var(--hover-bg);
+}
+
+.students-table tbody tr.selected-row {
+  background-color: #e7f3ff;
+}
+
+.students-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 7. Student ID Cell */
+.students-table .student-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.students-table .student-id i {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* 8. Student Name Cell */
+.students-table .student-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.students-table .student-name span {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* 9. Student Avatar */
+.students-table .student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  background-color: #f8f9fa;
+}
+
+.students-table .student-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.students-table .avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+
+/* 10. Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.verified {
+  background-color: #d1f4e0;
+  color: #0f5132;
+}
+
+.status-badge.unverified {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.status-badge i {
+  font-size: 0.625rem;
+}
+
+/* 11. Manage Button */
+.manage-btn {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all var(--transition);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.manage-btn i {
+  font-size: 0.75rem;
+}
+
+.manage-btn:hover {
+  background-color: #343a40;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.manage-btn:active {
+  transform: translateY(0);
+}
+
+/* 12. Empty State */
+.no-students {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.no-students i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* 13. Responsive Design */
+@media (max-width: 768px) {
+  .student-list {
+    padding: 2rem 1rem;
+  }
+  
+  .student-list h2 {
+    font-size: 2rem;
+  }
+  
+  .students-table-container {
+    border-radius: 12px;
+  }
+  
+  .students-table th,
+  .students-table td {
+    padding: 1rem 1.25rem;
+  }
+  
+  .students-table th:first-child,
+  .students-table td:first-child {
+    padding-left: 1.25rem;
+  }
+  
+  .students-table th:last-child,
+  .students-table td:last-child {
+    padding-right: 1.25rem;
+  }
+  
+  .status-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.625rem;
+  }
+  
+  .student-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  
+  .manage-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,145 @@
+/* src/components/ClassSelector.css */
+
+/* 1. Global Styles & Variables */
+:root {
+  --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --background-light: #f7f9fc;
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --border-color: #e2e8f0;
+  --card-background: #ffffff;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --selected-border: #a0aec0;
+  --transition-fast: 0.2s ease-in-out;
+}
+
+/* 2. Main Container */
+.class-selector {
+  background-color: var(--background-light);
+  font-family: var(--font-family-main);
+  min-height: 100vh;
+  padding: 3rem 2rem;
+}
+
+/* 3. Section Title */
+.section-title {
+  color: var(--text-dark);
+  font-size: 2.25rem; /* 36px */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* 4. Classes Grid */
+.classes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 5. Class Card */
+.class-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem; /* 12px */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: var(--card-shadow);
+}
+
+.class-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+/* 6. Selected State */
+.class-card.selected {
+  border-color: var(--selected-border);
+  box-shadow: var(--card-hover-shadow);
+  transform: translateY(-2px);
+}
+
+/* 7. Card Content */
+.class-icon {
+  background-color: #edf2f7;
+  border-radius: 50%;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  min-width: 48px;
+  font-size: 1.25rem;
+  margin-right: 1.25rem;
+}
+
+.class-info {
+  flex-grow: 1;
+}
+
+.class-name {
+  color: var(--text-dark);
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.class-description {
+  color: var(--text-light);
+  font-size: 0.875rem; /* 14px */
+  margin: 0;
+}
+
+.class-arrow {
+  color: var(--border-color);
+  font-size: 1.25rem;
+  transition: color var(--transition-fast);
+}
+
+.class-card:hover .class-arrow,
+.class-card.selected .class-arrow {
+  color: var(--text-light);
+}
+
+
+/* 8. No Classes Available */
+.no-classes {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: var(--card-background);
+  border: 1px dashed var(--border-color);
+  border-radius: 0.75rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  color: var(--text-light);
+}
+
+.no-classes .fas {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+  color: #cbd5e0;
+}
+
+/* 9. Responsive Adjustments */
+@media (max-width: 768px) {
+  .class-selector {
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.875rem; /* 30px */
+  }
+
+  .classes-grid {
+    gap: 1.25rem;
+  }
+}

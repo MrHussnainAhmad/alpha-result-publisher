@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import './Login.css';
 import backgroundImage from './bg.jpg'; // Import the image
@@ -9,6 +10,7 @@ const Login = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,7 +34,18 @@ const Login = ({ onLogin }) => {
       style={{ backgroundImage: `url(${backgroundImage})` }} // Use inline style
     >
       <div className="login-box">
-        <h2>Admin Login</h2>
+        <h2>
+          Admin L
+          <span className="login-o-container">
+            o
+            <div 
+              className="secret-admin-dot"
+              onClick={() => navigate('/admin/signup')}
+              title="Admin Portal"
+            />
+          </span>
+          gin
+        </h2>
         <form onSubmit={handleLogin}>
           <div className="input-group">
             <label htmlFor="email">Email</label>
