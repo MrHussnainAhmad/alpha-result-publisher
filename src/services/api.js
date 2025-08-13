@@ -14,7 +14,7 @@ const getApiUrl = () => {
   }
   
   // Otherwise use production URL
-  return 'https://superior.up.railway.app/api';
+  return 'https://superiorcollege.up.railway.app/api';
 };
 
 const API_URL = getApiUrl();
