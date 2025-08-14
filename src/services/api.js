@@ -23,7 +23,41 @@ console.log('API URL:', API_URL); // For debugging
 
 const api = axios.create({
   baseURL: API_URL,
+  timeout: 10000, // 10 second timeout
 });
+
+// Request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle common errors
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error);
+    
+    // Handle authentication errors
+    if (error.response?.status === 401) {
+      console.log('Authentication failed, clearing token');
+      localStorage.removeItem('token');
+      // You could redirect to login here if needed
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 export const authAPI = {
   adminLogin: (credentials) => api.post('/admin/login', credentials),
@@ -53,6 +87,12 @@ export const classAPI = {
 
 export const studentAPI = {
     getStudentsByClass: (classId, token) => api.get(`/admin/students`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+    // Add a more specific endpoint for getting students by class
+    getStudentsByClassId: (classId, token) => api.get(`/admin/students?class=${classId}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }

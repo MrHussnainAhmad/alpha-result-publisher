@@ -59,27 +59,58 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 10px;
+}
+
+.back-to-classes-btn,
+.refresh-btn,
+.logout-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.back-to-classes-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.back-to-classes-btn:hover {
+  background-color: #5a6268;
+}
+
+.refresh-btn {
+  background-color: #17a2b8;
+  color: white;
+  padding: 8px 12px;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background-color: #138496;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }
 
 /* 6. Buttons */
-.logout-btn,
-.back-to-classes-btn {
-  background-color: transparent;
-  border: 1px solid var(--header-border);
-  border-radius: 0.5rem;
-  color: var(--text-dark);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: all var(--transition);
-  font-family: inherit;
-}
-
 .logout-btn:hover,
 .back-to-classes-btn:hover {
   background-color: var(--button-hover-bg);

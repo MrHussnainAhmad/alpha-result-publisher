@@ -36,7 +36,7 @@ const AdminSignup = () => {
     setError('');
     
     try {
-      const response = await authAPI.adminSignup({
+      await authAPI.adminSignup({
         fullname: formData.fullname,
         username: formData.username,
         email: formData.email,

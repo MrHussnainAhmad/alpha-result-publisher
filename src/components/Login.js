@@ -16,13 +16,32 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
     try {
       const response = await authAPI.adminLogin({ email, password });
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-      onLogin();
+      
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        onLogin();
+        console.log('Login successful');
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
-      setError('Invalid email or password');
+      console.error('Login error:', err);
+      console.error('Error response:', err.response?.data);
+      
+      if (err.response?.status === 401) {
+        setError('Invalid email or password');
+      } else if (err.response?.status === 404) {
+        setError('Admin account not found');
+      } else if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err.message) {
+        setError(`Login failed: ${err.message}`);
+      } else {
+        setError('Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

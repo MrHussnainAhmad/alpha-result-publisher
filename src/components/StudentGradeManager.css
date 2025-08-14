@@ -555,6 +555,128 @@
   font-weight: 500;
 }
 
+/* 11a. Record Filters */
+.record-filters {
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-select,
+.filter-date {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+  color: var(--text-dark);
+  min-width: 220px;
+}
+
+.filter-select:focus,
+.filter-date:focus {
+  outline: none;
+  border-color: var(--text-light);
+  box-shadow: 0 0 0 3px rgba(113, 128, 150, 0.1);
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+}
+
+.filter-button {
+  background-color: var(--text-dark);
+  color: white;
+  border: none;
+  padding: 0.625rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all var(--transition);
+}
+
+.filter-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-button:not(:disabled):hover {
+  background-color: #1a202c;
+}
+
+.record-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 0 0 1.5rem 0;
+}
+
+.summary-item {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.summary-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.summary-badge {
+  display: inline-block;
+  background-color: var(--text-dark);
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+  min-width: 64px;
+  text-align: center;
+}
+
+.summary-grade {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
 @media (max-width: 768px) {
   .student-grade-manager {
     padding: 0;
@@ -608,5 +730,14 @@
   .add-grades-section,
   .grade-records-section {
     padding: 2rem;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-select,
+  .filter-date {
+    min-width: 100%;
   }
 }

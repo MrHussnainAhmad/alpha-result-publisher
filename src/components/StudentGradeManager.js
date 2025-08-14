@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { gradeAPI, subjectAPI } from '../services/api';
 import './StudentGradeManager.css';
 
@@ -16,6 +16,9 @@ const StudentGradeManager = ({ student, onBack }) => {
   
   // Show Record State
   const [gradeRecords, setGradeRecords] = useState([]);
+  const [recordExamType, setRecordExamType] = useState('');
+  const [recordExamDate, setRecordExamDate] = useState('');
+  const [filtersApplied, setFiltersApplied] = useState(false);
 
   const examTypes = [
     { value: 'monthly', label: 'Monthly', icon: 'fa-calendar-alt' },
@@ -24,37 +27,82 @@ const StudentGradeManager = ({ student, onBack }) => {
     { value: 'surprise', label: 'Surprise', icon: 'fa-exclamation-triangle' }
   ];
 
+  const fetchSubjects = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Authentication token not found. Please login again.');
+        return;
+      }
+      
+      const response = await subjectAPI.getSubjects(token);
+      
+      if (response.data && response.data.subjects) {
+        setSubjects(response.data.subjects);
+        console.log(`Loaded ${response.data.subjects.length} subjects`);
+      } else {
+        setSubjects([]);
+        console.log('No subjects data in response');
+      }
+    } catch (error) {
+      console.error('Error fetching subjects:', error);
+      console.error('Error response:', error.response?.data);
+      
+      if (error.response?.status === 401) {
+        setError('Authentication failed. Please login again.');
+      } else if (error.response?.status === 404) {
+        setError('No subjects found.');
+      } else {
+        setError('Failed to load subjects');
+      }
+      setSubjects([]);
+    }
+  }, []);
+
+  const fetchGradeRecords = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Authentication token not found. Please login again.');
+        return;
+      }
+      
+      const response = await gradeAPI.getStudentGrades(student._id, token);
+      
+      if (response.data && response.data.grades) {
+        setGradeRecords(response.data.grades);
+        console.log(`Loaded ${response.data.grades.length} grade records`);
+      } else {
+        setGradeRecords([]);
+        console.log('No grade records data in response');
+      }
+    } catch (error) {
+      console.error('Error fetching grade records:', error);
+      console.error('Error response:', error.response?.data);
+      
+      if (error.response?.status === 401) {
+        setError('Authentication failed. Please login again.');
+      } else if (error.response?.status === 404) {
+        setError('No grade records found for this student.');
+      } else {
+        setError('Failed to load grade records');
+      }
+      setGradeRecords([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [student?._id]);
+
   useEffect(() => {
     fetchSubjects();
     if (activeTab === 'record') {
       fetchGradeRecords();
     }
-  }, [activeTab]);
-
-  const fetchSubjects = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await subjectAPI.getSubjects(token);
-      setSubjects(response.data.subjects || []);
-    } catch (error) {
-      console.error('Error fetching subjects:', error);
-      setError('Failed to load subjects');
-    }
-  };
-
-  const fetchGradeRecords = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await gradeAPI.getStudentGrades(student._id, token);
-      setGradeRecords(response.data.grades || []);
-    } catch (error) {
-      console.error('Error fetching grade records:', error);
-      setError('Failed to load grade records');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [activeTab, fetchSubjects, fetchGradeRecords]);
 
   const handleGradeChange = (subjectId, obtainedMarks, totalMarks) => {
     setGrades(prev => {
@@ -65,6 +113,55 @@ const StudentGradeManager = ({ student, onBack }) => {
         return [...prev, { subject: subjectId, obtainedMarks, totalMarks }];
       }
     });
+  };
+
+  const handleApplyFilters = () => {
+    setFiltersApplied(true);
+  };
+
+  const filteredGradeRecords = (() => {
+    if (!filtersApplied) return [];
+    if (!recordExamType || !recordExamDate) return [];
+    const selectedDate = recordExamDate; // yyyy-mm-dd from input
+    return gradeRecords.filter((record) => {
+      const recordDate = new Date(record.examDate);
+      const recordDateStr = new Date(recordDate.getTime() - recordDate.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 10);
+      return record.gradeType === recordExamType && recordDateStr === selectedDate;
+    });
+  })();
+
+  const handleRecordTypeChange = (type) => {
+    setRecordExamType(type);
+    setFiltersApplied(false);
+  };
+
+  const handleRecordDateChange = (date) => {
+    setRecordExamDate(date);
+    setFiltersApplied(false);
+  };
+
+  // Compute totals for filtered records (aggregated) - removed per requirements
+  const computeTotalsForRecord = (record) => {
+    const aggregate = (record?.subjects || []).reduce((acc, s) => {
+      acc.obtained += Number(s.marksObtained || 0);
+      acc.total += Number(s.totalMarks || 0);
+      return acc;
+    }, { obtained: 0, total: 0 });
+    const percentage = aggregate.total > 0 ? Math.round((aggregate.obtained / aggregate.total) * 100) : 0;
+    const grade = (() => {
+      if (percentage >= 90) return 'A+';
+      if (percentage >= 80) return 'A';
+      if (percentage >= 70) return 'B+';
+      if (percentage >= 60) return 'B';
+      if (percentage >= 50) return 'C+';
+      if (percentage >= 40) return 'C';
+      if (percentage >= 30) return 'D+';
+      if (percentage >= 20) return 'D';
+      return 'F';
+    })();
+    return { ...aggregate, percentage, grade };
   };
 
   const handleSubmitGrades = async () => {
@@ -259,42 +356,42 @@ const StudentGradeManager = ({ student, onBack }) => {
               </div>
             </div>
 
-                         <div className="grades-section">
-               <h3>Subject Marks</h3>
-               <div className="grades-grid">
-                 {subjects.map(subject => (
-                   <div key={subject._id} className="grade-item">
-                     <label>{subject.name}</label>
-                     <div className="marks-inputs">
-                       <div className="mark-input-group">
-                         <label>Obtained Marks</label>
-                         <input
-                           type="number"
-                           min="0"
-                           max="100"
-                           placeholder="0"
-                           value={grades.find(g => g.subject === subject._id)?.obtainedMarks || ''}
-                           onChange={(e) => handleGradeChange(subject._id, e.target.value, grades.find(g => g.subject === subject._id)?.totalMarks || 100)}
-                           className="mark-input"
-                         />
-                       </div>
-                       <div className="mark-input-group">
-                         <label>Total Marks</label>
-                         <input
-                           type="number"
-                           min="1"
-                           max="100"
-                           placeholder="100"
-                           value={grades.find(g => g.subject === subject._id)?.totalMarks || 100}
-                           onChange={(e) => handleGradeChange(subject._id, grades.find(g => g.subject === subject._id)?.obtainedMarks || 0, e.target.value)}
-                           className="mark-input"
-                         />
-                       </div>
-                     </div>
-                   </div>
-                 ))}
-               </div>
-             </div>
+            <div className="grades-section">
+              <h3>Subject Marks</h3>
+              <div className="grades-grid">
+                {subjects.map(subject => (
+                  <div key={subject._id} className="grade-item">
+                    <label>{subject.name}</label>
+                    <div className="marks-inputs">
+                      <div className="mark-input-group">
+                        <label>Obtained Marks</label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          placeholder="0"
+                          value={grades.find(g => g.subject === subject._id)?.obtainedMarks || ''}
+                          onChange={(e) => handleGradeChange(subject._id, e.target.value, grades.find(g => g.subject === subject._id)?.totalMarks || 100)}
+                          className="mark-input"
+                        />
+                      </div>
+                      <div className="mark-input-group">
+                        <label>Total Marks</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="100"
+                          placeholder="100"
+                          value={grades.find(g => g.subject === subject._id)?.totalMarks || 100}
+                          onChange={(e) => handleGradeChange(subject._id, grades.find(g => g.subject === subject._id)?.obtainedMarks || 0, e.target.value)}
+                          className="mark-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="submit-section">
               <button 
@@ -320,34 +417,100 @@ const StudentGradeManager = ({ student, onBack }) => {
 
         {activeTab === 'record' && (
           <div className="grade-records-section">
+            <div className="record-filters">
+              <div className="filter-row">
+                <div className="filter-group">
+                  <label>Exam Type</label>
+                  <select
+                    className="filter-select"
+                    value={recordExamType}
+                    onChange={(e) => handleRecordTypeChange(e.target.value)}
+                  >
+                    <option value="">Select Type</option>
+                    {examTypes.map((type) => (
+                      <option key={type.value} value={type.value}>{type.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="filter-group">
+                  <label>Exam Date</label>
+                  <input
+                    type="date"
+                    className="filter-date"
+                    value={recordExamDate}
+                    onChange={(e) => handleRecordDateChange(e.target.value)}
+                  />
+                </div>
+                <div className="filter-actions">
+                  <button
+                    className="filter-button"
+                    onClick={handleApplyFilters}
+                    disabled={!recordExamType || !recordExamDate}
+                  >
+                    Show Results
+                  </button>
+                </div>
+              </div>
+            </div>
+
             {loading ? (
               <div className="loading">
                 <i className="fas fa-spinner fa-spin"></i>
                 Loading grade records...
               </div>
-            ) : gradeRecords.length > 0 ? (
-              <div className="records-list">
-                {gradeRecords.map((record, index) => (
-                  <div key={index} className="record-card">
-                                         <div className="record-header">
-                       <h4>{record.gradeType} Exam</h4>
-                       <span className="record-date">{new Date(record.examDate).toLocaleDateString()}</span>
-                     </div>
-                                         <div className="record-grades">
-                       {record.subjects.map((subject, idx) => (
-                         <div key={idx} className="record-grade">
-                           <span className="subject-name">{getSubjectName(subject.subject)}</span>
-                           <span className="grade-value">{subject.marksObtained}/{subject.totalMarks} ({subject.grade})</span>
-                         </div>
-                       ))}
-                     </div>
-                  </div>
-                ))}
+            ) : !filtersApplied ? (
+              <div className="no-records">
+                <i className="fas fa-filter"></i>
+                <p>Select exam type and date, then click "Show Results".</p>
               </div>
+            ) : filteredGradeRecords.length > 0 ? (
+              <>
+                <div className="records-list">
+                  {filteredGradeRecords.map((record, index) => (
+                    <div key={index} className="record-card">
+                      <div className="record-header">
+                        <h4>{record.gradeType} Exam</h4>
+                        <span className="record-date">{new Date(record.examDate).toLocaleDateString()}</span>
+                      </div>
+                      {(() => {
+                        const rTotals = computeTotalsForRecord(record);
+                        return (
+                          <div className="record-summary">
+                            <div className="summary-item">
+                              <span className="summary-label">Total Obtained</span>
+                              <span className="summary-value">{rTotals.obtained}</span>
+                            </div>
+                            <div className="summary-item">
+                              <span className="summary-label">Total Marks</span>
+                              <span className="summary-value">{rTotals.total}</span>
+                            </div>
+                            <div className="summary-item">
+                              <span className="summary-label">Percentage</span>
+                              <span className="summary-badge">{rTotals.percentage}%</span>
+                            </div>
+                            <div className="summary-item">
+                              <span className="summary-label">Grade</span>
+                              <span className="summary-grade">{rTotals.grade}</span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <div className="record-grades">
+                        {record.subjects.map((subject, idx) => (
+                          <div key={idx} className="record-grade">
+                            <span className="subject-name">{getSubjectName(subject.subject)}</span>
+                            <span className="grade-value">{subject.marksObtained}/{subject.totalMarks} ({subject.grade})</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             ) : (
               <div className="no-records">
                 <i className="fas fa-file-alt"></i>
-                <p>No grade records found for this student.</p>
+                <p>No grade records match the selected type and date.</p>
               </div>
             )}
           </div>
