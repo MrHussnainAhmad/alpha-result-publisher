@@ -50,12 +50,12 @@ A web-based admin panel for managing student grades and records for Superior Col
 
 ### 🛠 **Development:**
 
-```bash
+   ```bash
 # Install dependencies
-npm install
+   npm install
 
 # Start development server
-npm start
+   npm start
 
 # Build for production
 npm run build
